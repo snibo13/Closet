@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script type="text/javascript" src="colorsClass.js"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/assets/css/keyframes.css">
+  <link rel="stylesheet" href="/assets/css/pageTransitions.css">
+  <style>
+    #swatch {
+      display:none;
+      z-index: -2;
+      height: 100vh;
+      width: 100vw;
+      position: absolute;
+      transition-duration: 0.5s;
+      top: 0;
+      left: 0;
+    }
+    #id {
+      z-index: 2;
+      position:absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+  <script>
+    var result, color;
+    function submit() {
+      var color = toHSL(toRGB(selectColor()));
+      $('#swatch').css({'background-color':`hsl(${color.hue},${color.saturation}%,${color.lightness}%)`});
+      $('#swatch').show();
+      type = $('input[name=find]:checked').val();
+      switch(type) {
+        case 'comp':
+          result = color.findComplement();
+          display();
+          break;
+        case 'mono':
+          result = color.findMonochromatic();
+          display();
+          break;
+        case 'anal':
+          result = color.findAnalagous();
+          display();
+          break;
+        case 'tri':
+          result = color.findTriadic();
+          display();
+          break;
+        case 'tetra':
+          result = color.findTetradic();
+          display();
+          break;
+        default:
+          var ctx = document.getElementById("results").getContext("2d");
+          ctx.fillStyle = "#000";
+          ctx.fillText(0,0,"Please select a color scheme");
+      }
+    }
+    function compute(type) {
+
+
+    }
+    function display() {
+      console.log(result);
+      var ctx = document.getElementById("results").getContext("2d");
+      ctx.clearRect(0,0, 500, 125);
+      result.forEach(generateSwatch);
+    }
+
+    function generateSwatch(color, index) {
+      console.log(`hsl(${color.hue},${color.saturation},${color.lightness})`);
+      var hsl = `hsl(${color.hue},${color.saturation}%,${color.lightness}%)`;
+      var c = document.getElementById("results");
+      var ctx = c.getContext("2d");
+      ctx.fillStyle = hsl;
+      ctx.strokeStyle = "white";
+      ctx.fillRect(100 * index, 12.5, 75, 75);
+      ctx.stroke();
+    }
+
+    function selectColor() {
+      var selectorInput = $('#color-selector').value;
+      if selectorInput == "manual":
+        return $("#manual-color").value;
+    }
+  </script>
+</head>
+<body class="m-scene">
+    <div id="swatch" class="scene-element scene-element--fade-in-down"></div>
+    <div id>
+      <select name="color-selector" id="color-selector">
+        <option value="">Navy</option>
+        <option value="">Beige</option>
+        <option value="">Black</option>
+        <option value="">White</option>
+        <option value="">Blue Jeans</option>
+
+        <option value="manual">Select a color manually</option>
+      </select>
+      <input type="color" id="manual-color">
+      <!-- <select type="select" id="find"> -->
+        <input name="find" type="radio" value="comp">Complements</input>
+        <input name="find" type="radio" value="mono">Monochromatic</input>
+        <input name="find" type="radio" value="anal">Analagous</input>
+        <input name="find" type="radio" value="tri">Triadic</input>
+        <input name="find" type="radio" value="tetra">Tetradic</input>
+      <!-- </select> -->
+      <input type="submit" id="submit" onclick="submit()">
+
+    <!-- <svg id="results" style="position: absolute;top: 40;left: 40;">
+      <rect height="100" width="100" style="fillStyle: hsl(10, 25, 18)">
+    </svg> -->
+    <canvas id="results" width="500" height ="125"></canvas>
+    </div>
+
+</body>
+</html>
