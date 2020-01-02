@@ -87,9 +87,10 @@
     }
 
     function selectColor() {
-      var selectorInput = $('#color-selector').value;
+      var selectorInput = $('#color-selector').val();
       if selectorInput == "manual":
-        return $("#manual-color").value;
+        return $("#manual-color").val();
+
     }
   </script>
 </head>
